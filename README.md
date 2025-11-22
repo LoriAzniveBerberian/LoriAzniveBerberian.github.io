@@ -1,6 +1,6 @@
 **Forecasting California kelp canopy with simple machine learning** <img align="right" width="220" height="220" src="/assets/IMG/image.png">
 
-Hi, I’m Lori Aznive Berberian. This site hosts my final project for AOS C111 / C204: Environmental Data Science.
+Hi, I’m Lori Berberian. This site hosts my final project for AOS C111 / C204: Environmental Data Science.
 
 In this project, I use a statewide, satellite-derived kelp canopy data set from the California coast and train simple machine learning models to predict future kelp canopy from its own past. The goal is to build a **baseline “persistence-plus” model** that captures typical kelp dynamics without explicitly using environmental drivers. This baseline will later act as a null model for my PhD work on wildfire impacts on kelp forests.
 
