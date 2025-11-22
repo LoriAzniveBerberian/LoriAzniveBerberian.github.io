@@ -1,4 +1,4 @@
-**Forecasting California kelp canopy with simple machine learning <img align="right" width="220" height="220" src="/assets/IMG/image.png">
+**Forecasting California kelp canopy with simple machine learning** <img align="right" width="220" height="220" src="/assets/IMG/image.png">
 
 Hi, I’m Lori Aznive Berberian. This site hosts my final project for AOS C111 / C204: Environmental Data Science.
 
