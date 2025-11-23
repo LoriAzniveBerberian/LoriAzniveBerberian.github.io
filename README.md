@@ -23,7 +23,7 @@ Kelp forests are highly dynamic, responding to storms, marine heatwaves, and sed
 
 ## About me
 
-I am a PhD student in Geography at UCLA, working on wildfire-induced changes in the coastal ocean and their impacts on canopy-forming kelps. This class project is a small, contained experiment that connects directly to my dissertation: building quantitative baselines so that future disturbances can be interpreted relative to “business-as-usual” kelp variability.
+I am a PhD student in Geography at UCLA, studying how changes in water clarity and light availability shape shallow benthic habitats and canopy-forming kelps such as giant kelp, bull kelp, split-fan kelp, and sea bamboo, especially under disturbances like wildfire runoff, high river discharge, and marine heatwaves. This class project is a small, contained experiment that connects directly to my dissertation: building quantitative baselines for kelp canopy dynamics so that future disturbances can be interpreted relative to “business-as-usual” variability in light and habitat conditions.
 
 
 A link to your code must be submitted on BruinLearn, and the course instructor must be able to download your code to mark it. The code could be in a Google Colab notebook (make sure to *share* the notebook so access is set to **Anyone with the link**), or you could upload the code into a separate GitHub repository, or you could upload the code into the `assets` directory of your website and link to it. 
