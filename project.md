@@ -13,8 +13,7 @@ Most existing kelp models in the literature incorporate a rich set of covariates
 
 > How much of kelp canopy variability can we predict using only kelp’s own recent history?
 
-If a simple, regularized linear model using only past canopy already explains a large fraction of variance, then that provides a strong null model. Future wildfire or climate impacts can then be framed as deviations from this baseline, rather than from raw observations alone.
-
+If a simple, regularized linear model using only past canopy already explains a large fraction of variance, then that provides a strong null model.
 ---
 
 ## 2. Data
