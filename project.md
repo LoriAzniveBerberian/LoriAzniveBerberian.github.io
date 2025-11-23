@@ -99,3 +99,95 @@ from sklearn.linear_model import Ridge
 model = Ridge(alpha=alpha)
 model.fit(X_train, y_train)
 y_pred_ridge = model.predict(X_test)
+```
+
+### 3.3 Evaluation
+
+I evaluated the models on a held-out test set in time using:
+
+- Root Mean Square Error (RMSE)  
+- Coefficient of determination (R²)  
+- Comparison to the naive persistence baseline
+
+I also computed a REC (Regression Error Characteristic) curve to compare the distribution of absolute errors between models. For a range of tolerances `epsilon`, the REC curve shows the fraction of test samples where the prediction error is less than `epsilon`.
+
+---
+
+## 4. Results (summary)
+
+Here I summarize qualitative results rather than exact numbers; the notebook contains full tables and plots.
+
+### Ridge vs naive persistence
+
+- The ridge regression model consistently outperformed the naive baseline in terms of RMSE and R² on the held-out years.  
+- The improvement was particularly noticeable at sites with more variable canopy, where extra history (beyond just the last time step) helped.
+
+### Neural network vs ridge
+
+- The MLP occasionally achieved slightly lower RMSE than ridge but was not dramatically better overall.  
+- Given the added complexity and tuning effort, ridge provided a strong, stable baseline model.
+
+### REC curves
+
+REC curves showed that, for most reasonable error tolerances, ridge (and sometimes the MLP) had a larger fraction of “good” predictions than the naive model, indicating more accurate forecasts across much of the coast.
+
+### Spatial patterns (qualitative)
+
+When aggregating errors by region (e.g., southern, central, northern California), performance varied, with some regions showing higher predictability than others. This spatial structure is important for interpreting future changes in light and habitat conditions, since some regions may naturally have more predictable kelp dynamics.
+
+---
+
+## 5. Discussion
+
+This project demonstrates that simple, regularized linear models using only kelp’s own history can provide a useful predictive baseline for canopy dynamics along the California coast. In many pixels, the ridge model explains a substantial fraction of variance beyond a naive persistence model.
+
+From a scientific point of view, this suggests that there is strong temporal autocorrelation and inertia in kelp canopy area: recent states carry a lot of information about the near future. From a methodological point of view, having a clean, interpretable baseline is valuable for impact studies:
+
+- If a disturbance that changes water clarity and light (e.g., wildfire runoff, extreme storms, or marine heatwaves) leads to kelp losses that are much larger than predicted by the baseline model, that is evidence of an impact.  
+- If observed changes are within the baseline’s expected variability, then attributing them to a specific event becomes less convincing.
+
+This “history-only” model is deliberately minimal. It is not meant to replace biophysical or multi-driver models, but rather to provide a null expectation for use in a broader BACI framework.
+
+---
+
+## 6. Limitations and future work
+
+Some key limitations:
+
+- **No explicit environmental drivers**  
+  The model ignores waves, temperature, nutrients, and runoff. This is by design for the class project, but clearly limits interpretability of what drives changes.
+
+- **Single-step forecasting**  
+  Here I focus on predicting one time step ahead. Multi-step forecasts (for example, 2–4 quarters) would be useful for planning and for understanding how quickly errors grow in time.
+
+- **Statewide pooling**  
+  By concatenating all stations together, I implicitly assume that the same mapping applies everywhere. In reality, parameters likely differ by region, depth, and exposure.
+
+Future extensions I am interested in:
+
+1. Adding simple covariates (e.g., wave height, sea surface temperature, runoff indices) to see how much they improve on the history-only baseline.  
+2. Fitting hierarchical or region-specific ridge models where coefficients can vary by coastal region.  
+3. Integrating this baseline explicitly into my wildfire–kelp and light-availability BACI workflow as the expected kelp trajectory in the “no-disturbance” world.
+
+---
+
+## 7. Code and reproducibility
+
+All of the analysis for this project is implemented in a Python notebook using:
+
+- `xarray` for handling the `(station, time)` grid of kelp canopy  
+- `numpy` and `pandas` for general data manipulation  
+- `scikit-learn` for ridge regression, MLP, and evaluation metrics  
+- Custom helper functions in `kelp_ml_utils` for:
+  - creating supervised learning windows (`make_supervised`)  
+  - splitting train and test sets in time (`train_test_split_time`)  
+  - building ridge models with consistent settings (`make_ridge_model`)
+
+Once the notebook is uploaded and shared, the link will appear on the home page of this site.
+
+---
+
+## 8. Take-home message
+
+Even a very simple machine learning model, built only on kelp’s own history, can capture much of the short-term variability in canopy area at the California coast. This kind of baseline model is a useful, lightweight tool for environmental data science: it is easy to explain, fast to run, and provides a clear yardstick for evaluating the added value of more complex models and for quantifying the effects of disturbances that alter water clarity and light availability.
+
