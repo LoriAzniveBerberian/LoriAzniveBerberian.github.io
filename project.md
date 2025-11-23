@@ -7,7 +7,7 @@ _Lori Aznive Berberian_
 
 ## 1. Motivation
 
-Giant kelp (_Macrocystis pyrifera_) and other canopy-forming macroalgae create structurally complex, productive habitats along the California coast. Their surface canopy area fluctuates due to waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff.
+Giant kelp (_Macrocystis pyrifera_), Bull kelp (_Nereocystis_), and other canopy-forming macroalgae create structurally complex, productive habitats along the California coast. Their surface canopy area fluctuates due to waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff.
 
 For my PhD research, I am broadly interested in how changes in **water clarity and light availability** shape shallow benthic habitats and canopy-forming kelps, and how those conditions shift during events like high river discharge, post-fire runoff, and marine heatwaves. To measure “impact” from any of these disturbances, I first need a **baseline expectation** of how kelp would behave in the absence of those events.
 
