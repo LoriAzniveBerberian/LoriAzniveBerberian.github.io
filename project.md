@@ -7,13 +7,16 @@ _Lori Aznive Berberian_
 
 ## 1. Motivation
 
-Giant kelp (_Macrocystis pyrifera_) and other canopy-forming macroalgae create structurally complex, productive habitats along the California coast. Their surface canopy area fluctuates due to waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff. For my PhD research, I am interested in how wildfires and post-fire runoff affect kelp forests, but to measure “impact” I first need a **baseline expectation** of how kelp would behave in the absence of those events.
+Giant kelp (_Macrocystis pyrifera_) and other canopy-forming macroalgae create structurally complex, productive habitats along the California coast. Their surface canopy area fluctuates due to waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff.
+
+For my PhD research, I am broadly interested in how changes in **water clarity and light availability** shape shallow benthic habitats and canopy-forming kelps, and how those conditions shift during events like high river discharge, post-fire runoff, and marine heatwaves. To measure “impact” from any of these disturbances, I first need a **baseline expectation** of how kelp would behave in the absence of those events.
 
 Most existing kelp models in the literature incorporate a rich set of covariates: waves, temperature, nutrients, upwelling indices, and sometimes local site effects. In this project, I take a deliberately simpler approach that fits within the scope of an ML class: I ask
 
 > How much of kelp canopy variability can we predict using only kelp’s own recent history?
 
-If a simple, regularized linear model using only past canopy already explains a large fraction of variance, then that provides a strong null model.
+If a simple, regularized linear model using only past canopy already explains a large fraction of variance, then that provides a strong null model. Future changes in light and habitat conditions (from fires, storms, or climate extremes) can then be framed as deviations from this baseline, rather than from raw observations alone.
+
 ---
 
 ## 2. Data
@@ -28,8 +31,8 @@ For this project I used a gridded kelp canopy product derived from Landsat image
 
 In code, the data are stored in an `xarray.Dataset` with dimensions:
 
-- `station` – unique ID for each coastal pixel
-- `time` – regular time steps (e.g., quarterly)
+- `station` – unique ID for each coastal pixel  
+- `time` – regular time steps (e.g., quarterly)  
 - associated coordinates for latitude and longitude per station
 
 I subsetted to coastal pixels with at least some kelp presence over the record to avoid pixels that are always zero.
@@ -52,7 +55,7 @@ The main preprocessing steps were:
 
 4. **Optional transformations**  
    I experimented with:
-   - scaling/standardizing features
+   - scaling / standardizing features  
    - log-transforming canopy area to reduce the influence of very large canopies
 
 The final setup is a clean `(X, y)` pair for training and testing that includes all stations concatenated together, with time order preserved.
@@ -65,32 +68,34 @@ The final setup is a clean `(X, y)` pair for training and testing that includes 
 
 The supervised learning problem is:
 
-- **Input**: a vector of past kelp canopy values at a given pixel, over a fixed number of time steps (e.g., 8 quarters or 1–2 years of history).
+- **Input**: a vector of past kelp canopy values at a given pixel, over a fixed number of time steps (for example, 8 quarters or about 2 years of history).
 - **Output**: kelp canopy at the next time step at the same pixel.
 
-Mathematically, for each station \( i \) and time \( t \), I want to learn a mapping
+For each station `i` and time `t`, I build an input vector and target:
 
-\[
-\mathbf{x}_{i,t} = [y_{i,t-1}, y_{i,t-2}, \dots, y_{i,t-k}] \rightarrow y_{i,t}
-\]
-
-across all stations and times in the training set.
+- Input vector:  
+  `x[i,t] = [y[i,t-1], y[i,t-2], ..., y[i,t-k]]`
+- Target:  
+  `y[i,t]`
 
 I also defined a **naive baseline** model:
 
-- Naive prediction: \( \hat{y}_{i,t}^{\text{naive}} = y_{i,t-1} \)
+- Naive prediction:  
+  `y_hat_naive[i,t] = y[i,t-1]`
 
 This checks whether my machine learning model is doing better than simply copying the last observation.
 
 ### 3.2 Models
 
-I focused on two models:
+I focused on two models.
 
-1. **Ridge regression (main model)**  
-   Ridge regression is a linear model with L2 regularization on the coefficients. In scikit-learn notation:
+#### 1. Ridge regression (main model)
 
-   ```python
-   from sklearn.linear_model import Ridge
+Ridge regression is a linear model with L2 regularization on the coefficients. In scikit-learn notation:
 
-   model = Ridge(alpha=alpha)
-   model.fit(X_train, y_train)
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=alpha)
+model.fit(X_train, y_train)
+y_pred_ridge = model.predict(X_test)
