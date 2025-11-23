@@ -1,67 +1,97 @@
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+# Forecasting California kelp canopy with simple machine learning
 
-## My Project
+_AOS C111 / C204 – Final Project_  
+_Lori Aznive Berberian_
 
-I applied machine learning techniques to investigate... Below is my report.
+---
 
-***
+## 1. Motivation
 
-## Introduction 
+Giant kelp (_Macrocystis pyrifera_) and other canopy-forming macroalgae create structurally complex, productive habitats along the California coast. Their surface canopy area fluctuates due to waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff. For my PhD research, I am interested in how wildfires and post-fire runoff affect kelp forests, but to measure “impact” I first need a **baseline expectation** of how kelp would behave in the absence of those events.
 
-Here is a summary description of the topic. Here is the problem. This is why the problem is important.
+Most existing kelp models in the literature incorporate a rich set of covariates: waves, temperature, nutrients, upwelling indices, and sometimes local site effects. In this project, I take a deliberately simpler approach that fits within the scope of an ML class: I ask
 
-There is some dataset that we can use to help solve this problem. This allows a machine learning approach. This is how I will solve the problem using supervised/unsupervised/reinforcement/etc. machine learning.
+> How much of kelp canopy variability can we predict using only kelp’s own recent history?
 
-We did this to solve the problem. We concluded that...
+If a simple, regularized linear model using only past canopy already explains a large fraction of variance, then that provides a strong null model. Future wildfire or climate impacts can then be framed as deviations from this baseline, rather than from raw observations alone.
 
-## Data
+---
 
-Here is an overview of the dataset, how it was obtained and the preprocessing steps taken, with some plots!
+## 2. Data
 
-![](assets/IMG/datapenguin.png){: width="500" }
+### 2.1 Kelp canopy data set
 
-*Figure 1: Here is a caption for my diagram. This one shows a pengiun [1].*
+For this project I used a gridded kelp canopy product derived from Landsat imagery along the California coast. The key features of the data set are:
 
-## Modelling
+- Spatial grid: approximately 1 km coastal pixels, each treated as a separate “station”.
+- Time axis: repeated observations over many years, aggregated to regular time steps (e.g., quarters).
+- Variable of interest: kelp canopy area per pixel and time step (units: m²). I work with a transformed version of this variable (such as log or standardized area) in the machine learning pipeline.
 
-Here are some more details about the machine learning approach, and why this was deemed appropriate for the dataset. 
+In code, the data are stored in an `xarray.Dataset` with dimensions:
 
-<p>
-When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
-  \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
-</p>
+- `station` – unique ID for each coastal pixel
+- `time` – regular time steps (e.g., quarterly)
+- associated coordinates for latitude and longitude per station
 
-The model might involve optimizing some quantity. You can include snippets of code if it is helpful to explain things.
+I subsetted to coastal pixels with at least some kelp presence over the record to avoid pixels that are always zero.
 
-```python
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.datasets import make_classification
-X, y = make_classification(n_features=4, random_state=0)
-clf = ExtraTreesClassifier(n_estimators=100, random_state=0)
-clf.fit(X, y)
-clf.predict([[0, 0, 0, 0]])
-```
+### 2.2 Preprocessing
 
-This is how the method was developed.
+The main preprocessing steps were:
 
-## Results
+1. **Time aggregation**  
+   Starting from the original time series, I used a cleaned, regular grid (e.g., quarterly maxima). This step had already been done before entering the ML workflow.
 
-Figure X shows... [description of Figure X].
+2. **History window construction**  
+   For each station and time step, I wanted a block of past canopy values as input and the next time step as the target. I used a helper function `make_supervised` (in `kelp_ml_utils`) to convert the `(station, time)` data into supervised learning arrays:
+   - Features: `[y(t-1), y(t-2), ..., y(t-k)]`
+   - Target: `y(t)`  
+   where `k` is the length of the history window (in time steps).
 
-## Discussion
+3. **Train–test split by time**  
+   Rather than randomly shuffling all samples, I split by time using `train_test_split_time`, so the model is trained on earlier years and evaluated on later years. This better reflects the forecasting use-case and avoids leakage from the “future” into the training set.
 
-From Figure X, one can see that... [interpretation of Figure X].
+4. **Optional transformations**  
+   I experimented with:
+   - scaling/standardizing features
+   - log-transforming canopy area to reduce the influence of very large canopies
 
-## Conclusion
+The final setup is a clean `(X, y)` pair for training and testing that includes all stations concatenated together, with time order preserved.
 
-Here is a brief summary. From this work, the following conclusions can be made:
-* first conclusion
-* second conclusion
+---
 
-Here is how this work could be developed further in a future project.
+## 3. Methods
 
-## References
-[1] DALL-E 3
+### 3.1 Supervised learning setup
 
-[back](./)
+The supervised learning problem is:
 
+- **Input**: a vector of past kelp canopy values at a given pixel, over a fixed number of time steps (e.g., 8 quarters or 1–2 years of history).
+- **Output**: kelp canopy at the next time step at the same pixel.
+
+Mathematically, for each station \( i \) and time \( t \), I want to learn a mapping
+
+\[
+\mathbf{x}_{i,t} = [y_{i,t-1}, y_{i,t-2}, \dots, y_{i,t-k}] \rightarrow y_{i,t}
+\]
+
+across all stations and times in the training set.
+
+I also defined a **naive baseline** model:
+
+- Naive prediction: \( \hat{y}_{i,t}^{\text{naive}} = y_{i,t-1} \)
+
+This checks whether my machine learning model is doing better than simply copying the last observation.
+
+### 3.2 Models
+
+I focused on two models:
+
+1. **Ridge regression (main model)**  
+   Ridge regression is a linear model with L2 regularization on the coefficients. In scikit-learn notation:
+
+   ```python
+   from sklearn.linear_model import Ridge
+
+   model = Ridge(alpha=alpha)
+   model.fit(X_train, y_train)
