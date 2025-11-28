@@ -6,21 +6,21 @@ In this project, I use a statewide, satellite-derived kelp canopy data set from 
 
 ---
 
-## Quick links
+## quick links
 
-- [Full project report (web)](project.md)
-- Project code (Google Colab or GitHub repo) – link coming soon
+- [full project report (web)](project.md)  
+- project code (notebook + helpers) – link coming soon
 
 If you are grading this for AOS C111 / C204, the full write-up with figures is in `project.md`, and the executable notebook will be linked above once it is finalized.
 
 ---
 
-## Project in one paragraph
+## project in one paragraph
 
-Kelp forests are highly dynamic, responding to storms, marine heatwaves, and sediment-laden runoff from land. Many existing kelp models are fairly complex and include multiple environmental variables. Here I ask a simpler question: **how far can we get using only kelp’s own history as a predictor?** I treat each coastal 1 km pixel as a “station” with a time series of Landsat-derived canopy area. I then build a supervised learning data set where inputs are several quarters of past canopy and the target is canopy one step ahead. I train a ridge regression model (and a small neural network for comparison), evaluate performance on held-out years, and compare to a naive persistence baseline. Even this minimal history-based model captures a large fraction of variance in many regions, making it a useful baseline for future analyses of how changes in water clarity and light availability impact kelp.
+Kelp forests are highly dynamic, responding to storms, marine heatwaves, and sediment-laden runoff from land. Many existing kelp models are fairly complex and include multiple environmental variables. Here I ask a simpler question: **how far can we get using only kelp’s own history as a predictor?** I treat each coastal 1 km pixel as a “station” with a time series of Landsat-derived canopy area, restrict the domain to California, and convert each time series into a supervised learning problem where inputs are the previous four quarters of canopy and the target is canopy one quarter ahead. I fit a ridge regression model independently at each station, compare it to a naive persistence baseline, and then map performance along the coast. The model captures strong short-term persistence and an annual “memory” in kelp canopy, and in many regions it explains a substantial fraction of variance beyond a simple copy-the-last-quarter baseline. This makes it a useful starting point and null model for future analyses of how changes in water clarity and light availability impact kelp.
 
 ---
 
-## About me
+## about me
 
 I am a PhD student in Geography at UCLA, studying how changes in water clarity and light availability shape shallow benthic habitats and canopy-forming kelps such as giant kelp, bull kelp, split-fan kelp, and sea bamboo, especially under disturbances like wildfire runoff, high river discharge, and marine heatwaves. This class project is a small, contained experiment that connects directly to my dissertation: building quantitative baselines for kelp canopy dynamics so that future disturbances can be interpreted relative to “business-as-usual” variability in light and habitat conditions.
