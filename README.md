@@ -6,13 +6,11 @@ In this project, I use a statewide, satellite-derived kelp canopy data set from 
 
 ---
 
-## quick links
+## links
 
 - [full project report (web)](project.md)  
-- project code (notebook + helpers) – link coming soon
-
-If you are grading this for AOS C111 / C204, the full write-up with figures is in `project.md`, and the executable notebook will be linked above once it is finalized.
-
+- main analysis script: [`kelp_ridge_forecast.py`](kelp_ridge_forecast.py?raw=1)
+- helper utilities: [`kelp_ml_utils.py`](kelp_ml_utils.py?raw=1)
 ---
 
 ## project in one paragraph
