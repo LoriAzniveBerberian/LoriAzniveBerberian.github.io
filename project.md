@@ -52,6 +52,7 @@ from sklearn.linear_model import Ridge
 model = Ridge(alpha=alpha)
 model.fit(X_train, y_train)
 y_pred_ridge = model.predict(X_test)
+```
 
 the regularization strength `alpha` controls how strongly the coefficients are shrunk toward zero, which helps prevent overfitting when the history window is long relative to the number of training samples. in practice i build the model using a helper function `make_ridge_model` from `kelp_ml_utils`, which sets up the ridge estimator (and any scaling) in a consistent way.
 
