@@ -3,7 +3,7 @@
 _AOS C111 / C204 – Final Project_  
 _Lori Aznive Berberian_
 
-## 1. motivation
+## 1. Motivation
 
 giant kelp (_macrocystis pyrifera_), bull kelp (_nereocystis_), and other canopy-forming macroalgae create structurally complex, productive habitats along the california coast. their surface canopy area changes over time with waves, storms, marine heatwaves, and land–ocean connections such as freshwater and sediment runoff.
 
@@ -17,7 +17,7 @@ if a simple, regularized linear model using only past canopy explains a large fr
 
 ---
 
-## 2. data
+## 2. Data
 
 for this project i use a gridded kelp canopy product derived from landsat imagery along the california coast. the data set consists of ~1 km coastal pixels, each treated as a separate “station,” followed over many years at regular quarterly time steps. the main variable is kelp canopy area per pixel per quarter (units: m²).
 
@@ -29,7 +29,7 @@ helper functions in `kelp_ml_utils` handle the ml-ready formatting: `make_superv
 
 ---
 
-## 3. methods
+## 3. Methods
 
 i frame the problem as a one-step-ahead forecasting task. for each station `i` and time `t`, the input is a vector of past canopy values over a fixed number of quarters (a history window), and the target is the canopy at the next quarter at the same station.
 
@@ -59,7 +59,7 @@ to respect time ordering, i split the data by time, not randomly: early years ar
 
 on the held-out test set, i evaluate performance using root mean squared error (`rmse`) and coefficient of determination (`r²`), and i compare the ridge model directly to the naive persistence baseline. i also compute a regression error characteristic (`rec`) curve: for a range of error tolerances, the rec curve shows the fraction of test points whose absolute error is smaller than that tolerance. this gives a more detailed look at how often predictions are “good enough” at different error levels.
 
-## 4. results
+## 4. Results
 
 here i summarize qualitative patterns rather than exact values; the notebook contains full tables and plots.
 
@@ -69,7 +69,7 @@ rec curves show that for most reasonable error thresholds, a larger fraction of 
 
 when i map performance metrics back into space (for example, by looking at average `r²` per region), some parts of the coast appear more predictable than others. persistent kelp beds tend to show higher predictability, while areas with frequent crashes and recoveries are harder to predict from history alone. this spatial structure is important for later interpretation: some regions may naturally have smoother dynamics, while others are more strongly impacted by external forcing such as waves, warm events, or changes in turbidity and light.
 
-## 5. discussion
+## 5. Discussion
 
 this project shows that a simple, regularized linear model using only kelp’s own recent history can provide a useful predictive baseline for kelp canopy dynamics along the california coast. in many pixels, the ridge model explains a substantial fraction of the variance beyond what a naive persistence model can capture.
 
@@ -77,7 +77,7 @@ scientifically, the results support the idea that kelp canopy has strong tempora
 
 if a disturbance that changes water clarity and light (for example, wildfire-driven runoff that increases turbidity) leads to kelp losses much larger than the ridge baseline would expect, that is evidence of a real impact. if observed changes fall within the baseline’s expected variability, then attributing them to a specific event becomes less convincing. this connects directly to the baci-style questions i am interested in for my phd.
 
-## 6. limitations and future work
+## 6. Limitations and future work
 
 there are several clear limitations to this simple setup.
 
@@ -85,7 +85,7 @@ first, there are no explicit environmental drivers in the model. waves, sea surf
 
 future work could relax these simplifications. simple covariates such as sst anomalies, wave height, and runoff indices could be added on top of the history features to see how much they improve performance over the history-only baseline. region-specific or hierarchical ridge models could allow coefficients to vary along the coast while still sharing information. ultimately, this baseline will be integrated directly into my wildfire–kelp and light-availability analyses by comparing “expected kelp” (from the model) and “observed kelp” around disturbance events.
 
-## 7. code and reproducibility
+## 7. Code and reproducibility
 
 all of the analysis for this project is implemented in a python notebook. the main tools are:
 
@@ -101,9 +101,6 @@ i also rely on a small set of custom helper functions collected in `kelp_ml_util
 
 once the notebook is uploaded and shared, the link will appear on the home page of this site so the results can be reproduced and extended.
 
-## 8. take-home message
+## 8. Conclusion
 
 even a very simple machine learning model that only uses kelp’s own recent history can capture much of the short-term variability in kelp canopy along the california coast. the history-only ridge model is easy to explain, fast to run, and provides a clear yardstick for two things: evaluating the added value of more complex, multi-driver models, and quantifying how much observed changes around disturbances (such as wildfire-driven turbidity events) deviate from a no-disturbance expectation.
-
-for my broader phd work, this baseline is a practical starting point for studying how changes in water clarity and light availability reshape kelp forests in space and time.
-
