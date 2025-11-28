@@ -31,24 +31,18 @@ helper functions in `kelp_ml_utils` handle the ml-ready formatting: `make_superv
 
 ## 3. methods
 
-i frame the problem as a one-step-ahead forecasting task. for each station *i* and time *t*, the input is a vector of past canopy values over a fixed number of quarters (a history window), and the target is the canopy at the next quarter at the same station. in notation,
+i frame the problem as a one-step-ahead forecasting task. for each station `i` and time `t`, the input is a vector of past canopy values over a fixed number of quarters (a history window), and the target is the canopy at the next quarter at the same station.
 
-- input:  
-  \[
-  x[i,t] = [y[i,t-1], y[i,t-2], \dots, y[i,t-k]]
-  \]
-- target:  
-  \[
-  y[i,t] = \text{kelp canopy at time } t
-  \]
+in notation, i write the input vector as  
+`x[i,t] = [y[i,t-1], y[i,t-2], ..., y[i,t-k]]`  
+
+and the target as  
+`y[i,t] = kelp canopy at time t`  
 
 where `k` is the length of the history window used in the current script (on the order of a year of quarterly history).
 
-as a simple baseline, i define a naive “persistence” model that just copies the last observation:
-
-\[
-\hat{y}_{\text{naive}}[i,t] = y[i,t-1].
-\]
+as a simple baseline, i define a naive “persistence” model that just copies the last observation:  
+`\hat{y}_naive[i,t] = y[i,t-1]`.
 
 the main ml model is ridge regression, a linear model with l2 regularization on the coefficients. in scikit-learn form:
 
@@ -58,6 +52,7 @@ from sklearn.linear_model import Ridge
 model = Ridge(alpha=alpha)
 model.fit(X_train, y_train)
 y_pred_ridge = model.predict(X_test)
+
 the regularization strength `alpha` controls how strongly the coefficients are shrunk toward zero, which helps prevent overfitting when the history window is long relative to the number of training samples. in practice i build the model using a helper function `make_ridge_model` from `kelp_ml_utils`, which sets up the ridge estimator (and any scaling) in a consistent way.
 
 to respect time ordering, i split the data by time, not randomly: early years are used for training and later years are held out for testing. this mimics “train on the past, forecast the future” and avoids leakage from the future into the training set.
