@@ -107,9 +107,9 @@ Single-station behavior: For the representative station, the ridge model follows
 
 Statewide average behavior: To examine performance at the statewide level, I aggregate kelp canopy over all California stations and examine the statewide mean canopy for the test quarters. Figures 7–9 compare ridge and naive at this scale.
 
-![Figure 7. Statewide mean kelp canopy time series.](assets/IMG/YOUR_FIG7_FILENAME.png)
+![Figure 7. Ridge vs naive statewide.](assets/IMG/Statewide_scatter.png)
 
-**Figure 7.** California mean kelp canopy (test quarters only). Ridge (orange) generally tracks the observed mean (blue) more closely than naive (green), particularly after large spikes where persistence struggles.
+**Figure 7.** Ridge vs naive statewide. Ridge uses four quarters of history. During the test period, ridge (red x and dashed line) generally stays closer to the observed canopy (green circles) than the naive model (purple dotted line), especially during moderate canopy fluctuations.
 
 
 ![Figure 8. Statewide mean: true vs predicted.](assets/IMG/statewide_ridge_vs_naive.png)
