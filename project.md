@@ -14,7 +14,7 @@ Most kelp models in the literature include many environmental drivers (waves, te
 
 > **How much of kelp canopy variability along California can we predict using only kelp’s own recent history?**
 
-If a simple, regularized linear model using only past canopy explains a large fraction of variance, that gives a strong null model. Later, I can interpret deviations from this baseline in terms of changes in light, turbidity, or other drivers.
+A simple, regularized linear model relying solely on past canopy data provides a strong null model if it explains a large fraction of the variance. I intend to refine this model to later use as a counterfactual in time series analysis. 
 
 ---
 
