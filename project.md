@@ -25,7 +25,7 @@ This project uses a statewide Landsat-derived kelp canopy product from the KelpW
 - SBC LTER Landsat kelp canopy dataset:  
   <https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.74>
 
-The dataset is gridded at approximately 1 km resolution. Each coastal pixel is treated as a separate **station** and followed over many years at regular quarterly time steps. The main variable is kelp canopy area per pixel per quarter (units: m²).
+The dataset is gridded at 30 m resolution. Each coastal pixel is treated as a separate **station** and followed over many years at regular quarterly time steps. The main variable is kelp canopy area per pixel per quarter (units: m²).
 
 In code, the data are stored in an `xarray.Dataset` with dimensions:
 
