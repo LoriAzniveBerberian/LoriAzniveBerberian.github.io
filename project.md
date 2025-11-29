@@ -61,11 +61,11 @@ For each station `i` and time `t`, the input is a vector of past canopy values o
 
 Here `k` is the length of the history window (in most runs, 4 quarters ≈ 1 year).
 
-As a simple baseline, I define a naive **persistence** model that just copies the last observation:
+As a simple baseline, I define a naive persistence model that just copies the last observation:
 
-\[
-\hat{y}_{\text{naive}}[i,t] = y[i,t-1].
-\]
+$$
+\hat{y}_{\text{naive}}[i,t] = y[i,t-1]
+$$
 
 The main ML model is **ridge regression**, a linear model with L2 regularization on the coefficients. In scikit-learn form:
 
@@ -136,11 +136,10 @@ Future work could improve upon the model by encorporating covariates (e.g., SST 
 ---
 ## 7. Code and reproducibility
 All of the analysis for this project is implemented in a python notebook and a small utility script. They can be accessed here:
+- Main notebook (analysis and figures): [`kelp_ridge_baseline_v3.ipynb`](kelp_ridge_baseline_v3.ipynb)  
+- Utility functions: [`kelp_ml_utils.py`](kelp_ml_utils.py)
 
-main notebook (analysis and figures): kelp_ridge_baseline_v3.ipynb
-utility functions: kelp_ml_utils.py
-
-the main tools used include:
+The main tools used include:
 - xarray to handle the (station, time) grid of kelp canopy
 - numpy and pandas for general data manipulation
 - scikit-learn for ridge regression and evaluation metrics
