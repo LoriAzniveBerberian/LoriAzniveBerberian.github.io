@@ -34,19 +34,16 @@ In code, the data are stored in an `xarray.Dataset` with dimensions:
 
 and coordinates `latitude(station)` and `longitude(station)`. I subset to a California lat/lon box and keep only stations that have non-zero canopy at least once, so I focus on locations where kelp actually occurs.
 
-Before fitting models, I:
-
-1. Work with the cleaned quarterly canopy time series for each station.  
+Before fitting models I :
+1. Worked with the cleaned quarterly canopy time series for each station.  
 2. Treat missing values as “no observation” rather than true zero canopy.  
 3. Drop stations with too few valid observations to support a history window.  
 
 Below are two simple figures summarising the data set:
-![Figure 1. California quarterly mean kelp canopy area.](figures/CAkelp_timeSeries.png)
-
+![Figure 1. California quarterly mean kelp canopy area.](assets/IMG/CAkelp_timeSeries.png)
 **Figure 1.** California’s quarterly average kelp canopy area from 1984–2024 (mean m² of canopy per pixel over all California stations).
 
-![Figure 2. Kelp habitat along the California coast.](figures/CAkelp_Habitat.png)
-
+![Figure 2. Kelp habitat along the California coast.](assets/IMG/CAkelp_Habitat.png)
 **Figure 2.** Kelp habitat along the California coast: Stations where canopy area is non-zero at least once in the time series.
 
 ---
@@ -79,39 +76,42 @@ y_pred_ridge = model.predict(X_test)
 ```
 The regularization strength, alpha, controls how strongly the coefficients are shrunk toward zero, which helps prevent overfitting when the history window is long relative to the number of training samples. I build the model using a helper function make_ridge_model from kelp_ml_utils, which sets up the ridge estimator and scales the data by the subtracting the mean and deviding by the standard deviation. I then split the data by time. Early years are used for training and later years are held out for testing. 
 
-I first apply this pipeline to a single station with large mean canopy. For that station I compute:
+I first apply this pipeline to a single station with large mean canopy. For that station I compute: A time-series comparison of train/test true vs ridge vs naive, A test scatter plot of true vs predicted canopy, and a regression error characteristic (REC) curve comparing ridge vs naive. The representative station is chosen as the one with the largest mean canopy over the record. Its autocorrelation function and location are shown below:
 
-A time-series comparison of train/test true vs ridge vs naive,
+![Figure 3. Autocorrelation and location of representative station.](assets/IMG/Autocorrelation_oneStation.png)
 
-A test scatter plot of true vs predicted canopy, and
+**Figure 3.** Autocorrelation of kelp canopy at one high-biomass station (left) and its location along the California coast (right). Autocorrelation is strong at lag 1 and decays with lag, supporting the use of recent history as a predictor.
 
-A regression error characteristic (REC) curve comparing ridge vs naive.
-
-The representative station is chosen as the one with the largest mean canopy over the record. Its autocorrelation function and location are shown below:
-
-Figure 3. Autocorrelation of kelp canopy at one high-biomass station (left) and its location along the California coast (right). Autocorrelation is strong at lag 1 and decays with lag, supporting the use of recent history as a predictor.
-
-I then run the same ridge setup for every California station using run_ridge_all_stations, which:
-
-Fits ridge at each station, computes per-station RMSE and R² for ridge and RMSE for the naive baseline, and aggregates statewide test-mean time series for the true, ridge, and naive predictions. Finally, I compute scatter plots and REC curves using the statewide mean canopy over all stations for each test quarter. This lets me compare ridge vs naive at both the local (single station) and global (statewide mean) scales.
+I then run the same ridge setup for every California station using run_ridge_all_stations, which: Fits ridge at each station, computes per-station RMSE and R² for ridge and RMSE for the naive baseline, and aggregates statewide test-mean time series for the true, ridge, and naive predictions. Finally, I compute scatter plots and REC curves using the statewide mean canopy over all stations for each test quarter. This lets me compare ridge vs naive at both the local (single station) and global (statewide mean) scales.
 
 ---
 ## 4. Results
 Single-station behavior: For the representative station, the ridge model follows the expected boom–bust cycles and tends to be closer to the test observations than the naive model. Figures 4–6 summarize this behavior.
 
-Figure 4. Ridge vs naive for one station. Ridge uses four quarters of history. During the test period, ridge (red x and dashed line) generally stays closer to the observed canopy (green circles) than the naive model (purple dotted line), especially during moderate canopy fluctuations.
+![Figure 4. Ridge vs naive time series, one station.](assets/IMG/ridge_vs_naive_oneStation.png)
+**Figure 4.** Ridge vs naive for one station. Ridge uses four quarters of history. During the test period, ridge (red x and dashed line) generally stays closer to the observed canopy (green circles) than the naive model (purple dotted line), especially during moderate canopy fluctuations.
 
-Figure 5. Test scatter for the same station. Ridge predictions (blue points) cluster closer to the 1:1 line than naive predictions (orange points), which show larger over- and underestimates, particularly at intermediate and high canopy values.
 
-Figure 6. REC curve (ridge vs naive, one station). The ridge curve lies above the naive curve for most absolute-error tolerances between ~50 and 500 m² per pixel, indicating that a larger fraction of quarters are predicted within any given tolerance when using ridge.
+![Figure 5. Test scatter at one station.](assets/IMG/ridge_vs_naive_oneStation_Scatter.png)
+**Figure 5.** Test scatter for the same station. Ridge predictions (blue points) cluster closer to the 1:1 line than naive predictions (orange points), which show larger over- and underestimates, particularly at intermediate and high canopy values.
+
+
+![Figure 6. REC curve at one station.](assets/IMG/rec_ride_vs_naive_oneStation.png)
+**Figure 6.** REC curve (ridge vs naive, one station). The ridge curve lies above the naive curve for most absolute-error tolerances between ~50 and 500 m² per pixel, indicating that a larger fraction of quarters are predicted within any given tolerance when using ridge.
+
 
 Statewide average behavior: To examine performance at the statewide level, I aggregate kelp canopy over all California stations and examine the statewide mean canopy for the test quarters. Figures 7–9 compare ridge and naive at this scale.
 
-Figure 7. California mean kelp canopy (test quarters only). Ridge (orange) generally tracks the observed mean (blue) more closely than naive (green), particularly after large spikes where persistence struggles.
+![Figure 7. Statewide mean kelp canopy time series.](assets/IMG/YOUR_FIG7_FILENAME.png)
+**Figure 7.** California mean kelp canopy (test quarters only). Ridge (orange) generally tracks the observed mean (blue) more closely than naive (green), particularly after large spikes where persistence struggles.
 
-Figure 8. Statewide mean canopy: True vs predicted. Ridge predictions (blue points) lie closer to the 1:1 line than naive predictions (orange points), which show more extreme deviations, especially at high canopy values.
 
-Figure 9. REC curves for the statewide mean canopy. For almost all tolerances up to ~50 m² per pixel, the ridge curve (blue) lies above the naive curve (orange), meaning ridge encloses a larger fraction of test quarters within a given absolute error tolerance. This indicates that, when judged on the mean canopy over California, the ridge baseline is more accurate and more reliable than copying the last quarter.
+![Figure 8. Statewide mean: true vs predicted.](assets/IMG/statewide_ridge_vs_naive.png)
+**Figure 8.** Statewide mean canopy: True vs predicted. Ridge predictions (blue points) lie closer to the 1:1 line than naive predictions (orange points), which show more extreme deviations, especially at high canopy values.
+
+
+![Figure 9. REC curves for statewide mean canopy.](assets/IMG/statewise_rec.png)
+**Figure 9.** REC curves for the statewide mean canopy. For almost all tolerances up to ~50 m² per pixel, the ridge curve (blue) lies above the naive curve (orange), meaning ridge encloses a larger fraction of test quarters within a given absolute error tolerance. This indicates that, when judged on the mean canopy over California, the ridge baseline is more accurate and more reliable than copying the last quarter.
 
 ---
 ## 5. Discussion
