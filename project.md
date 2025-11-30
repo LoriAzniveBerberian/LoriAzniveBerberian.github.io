@@ -92,8 +92,7 @@ Single-station behavior: For the representative station, the ridge model follows
 
 ![Figure 4. Ridge vs naive time series, one station.](assets/IMG/ridge_vs_naive_oneStation.png)
 
-**Figure 4.** Ridge vs naive for one station. Ridge uses four quarters of history. During the test period, ridge (red x and dashed line) generally stays closer to the observed canopy (green circles) than the naive model (purple dotted line), especially during moderate canopy fluctuations.
-
+**Figure 4.** Ridge vs naive predictions at a single high-biomass station. Ridge uses four quarters of history. During the test period, ridge (red × and dashed line) generally stays closer to the observed canopy (green circles) than the naive model (purple dotted line), especially during moderate canopy fluctuations. At this station, the absolute prediction error ranges from ≈1.4 to 672 m² per pixel for ridge, compared to 10 to 775 m² per pixel for the naive model.
 
 ![Figure 5. Test scatter at one station.](assets/IMG/ridge_vs_naive_oneStation_Scatter.png)
 
@@ -109,7 +108,7 @@ Statewide average behavior: To examine performance at the statewide level, I agg
 
 ![Figure 7. Ridge vs naive statewide.](assets/IMG/statewide_scatter_2.png)
 
-**Figure 7.** Ridge vs naive predictions. Each point is one quarter, with the x-axis showing the true mean kelp area and the y-axis the model prediction. Ridge points (blue) lie closer to the 1:1 dashed line than naive points (orange), indicating that ridge better reproduces the statewide mean canopy than the naive persistence model.
+**Figure 7.** Ridge vs naive statewide mean kelp canopy predictions for test quarters. Each point is one quarter, with the x-axis showing the true mean kelp area (m² per pixel) and the y-axis the model prediction. Ridge points (blue) lie closer to the 1:1 dashed line than naive points (orange), indicating that ridge better reproduces the statewide mean canopy. Across all test quarters, the statewide mean absolute error ranges from 2.1 to 289.5 m² per pixel for ridge and from 0.0 to 456.0 m² per pixel for the naive model.
 
 
 ![Figure 8. Statewide mean: true vs predicted.](assets/IMG/statewide_ridge_vs_naive.png)
