@@ -62,10 +62,7 @@ For each station `i` and time `t`, the input is a vector of past canopy values o
 Here `k` is the length of the history window (in most runs, 4 quarters ≈ 1 year).
 
 As a simple baseline, I define a naive persistence model that just copies the last observation:
-
-$$
-\hat{y}_{\text{naive}}[i,t] = y[i,t-1]
-$$
+`ŷ_naive[i,t] = y[i,t-1]`.
 
 The main ML model is **ridge regression**, a linear model with L2 regularization on the coefficients. In scikit-learn form:
 
