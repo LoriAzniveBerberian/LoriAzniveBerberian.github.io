@@ -6,11 +6,12 @@ In this project, I use a statewide, satellite-derived data set of kelp canopy fr
 
 ---
 
-## links
+## Links
+- [Full project report (web)](project.md)
+- Scripts: [`kelp_ridge_forecast.py`](kelp_ridge_forecast.py?raw=1) and [`kelp_ml_utils.py`](kelp_ml_utils.py?raw=1)
 
-- [full project report (web)](project.md)  
-- scripts: [`kelp_ridge_forecast.py`](kelp_ridge_forecast.py?raw=1) and [`kelp_ml_utils.py`](kelp_ml_utils.py?raw=1)
 ---
+
 
 ## project in one paragraph
 
