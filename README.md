@@ -8,7 +8,8 @@ In this project, I use a statewide, satellite-derived data set of kelp canopy fr
 
 ## Links
 - [Full project report (web)](project.md)
-- Scripts: [`run_kelp_ridge_baseline_v3.ipynb`](run_kelp_ridge_baseline_v3.ipynb?raw=1) and [`kelp_ml_utils.py`](kelp_ml_utils.py?raw=1)
+- Code: [`run_kelp_ridge_baseline_v3.ipynb`](run_kelp_ridge_baseline_v3.ipynb?raw=1) and [`kelp_ml_utils.py`](kelp_ml_utils.py?raw=1)
+
 ---
 
 ## project in one paragraph
